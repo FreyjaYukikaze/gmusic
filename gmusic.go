@@ -179,6 +179,20 @@ func (g *GMusic) ListPlaylists() ([]*Playlist, error) {
 	return data.Data.Items, nil
 }
 
+func (g *GMusic) GetTrackInfo(trackID string) (*Track, error) {
+	r, err := g.sjRequest("GET", "fetchtrack?alt=json&nid="+trackID, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer r.Body.Close()
+	var data Track
+
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
 type ListPlaylists struct {
 	Data struct {
 		Items []*Playlist `json:"items"`
